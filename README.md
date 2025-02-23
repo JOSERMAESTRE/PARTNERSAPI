@@ -12,14 +12,14 @@
 3. Carga el archivo `PARTNERS_VAR.postman_environment` incluido en el folder este repositorio.
 
 ## Run tests:
-Use this command to run the tests:
+Usa el siguiente comando para ejecutar los test  (no grafico):
 
 ```bash
 newman run PARTNERS.postman_collection.json -e PARTNERS_VAR.postman_environment.json
 ```
 
 ## Generate the report:
-After running the tests, generate the report with the command:
+Ejecuta el siguente comando para ejecutar los test reporte no grafico:
 
 ```bash
 newman run PARTNERS.postman_collection.json -e PARTNERS_VAR.postman_environment.json -r html --reporter-html-export report.html
