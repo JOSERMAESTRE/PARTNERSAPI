@@ -1,0 +1,328 @@
+{
+	"info": {
+		"_postman_id": "ea24d35e-1860-4e2c-8bfc-0c6054d63f86",
+		"name": "PARTNERS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38910927"
+	},
+	"item": [
+		{
+			"name": "VALIDATECATEGORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code is OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"the response is an object\", function () {\r",
+							"    pm.response.to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"validate category 'electronics'\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    jsonData.forEach(product => {\r",
+							"        pm.expect(product.category).to.eql(\"electronics\");\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}{{ENDPOINTELECTRONICS}}",
+					"host": [
+						"{{URL}}{{ENDPOINTELECTRONICS}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PRODUCBYID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomId = Math.floor(Math.random() * 10) + 1;\r",
+							"pm.environment.set(\"PRODUC_ID\",randomId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate product ID is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedId = pm.environment.get(\"PRODUC_ID\");\r",
+							"    pm.expect(jsonData.id).to.be.equals(expectedId);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The product price is a valid number\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.price).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.price).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"description is not empty\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"description\");\r",
+							"    pm.expect(jsonData.description).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}{{PRODUCTS}}{{PRODUC_ID}}",
+					"host": [
+						"{{URL}}{{PRODUCTS}}{{PRODUC_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATEPRODUCT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"product data successfully created\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.title).to.eql(\"MacBook Pro 16” M3\");\r",
+							"    pm.expect(jsonData.price).to.eql(2499.99);\r",
+							"    pm.expect(jsonData.category).to.eql(\"electronics\");\r",
+							"    pm.expect(jsonData.image).to.eql(\"https://cdn.arstechnica.net/wp-content/uploads/2023/11/IMG_1415.jpeg\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product created with a valid ID\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+							"    pm.environment.set(\"CREATED_ID\",jsonData.id);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"title\": \"MacBook Pro 16” M3\",\r\n        \"price\": 2499.99,\r\n        \"description\": \"Apple MacBook Pro 16-inch laptop with M3 chip, Liquid Retina XDR display and up to 22 hours of battery life.\",\r\n        \"category\": \"electronics\",\r\n        \"image\": \"https://cdn.arstechnica.net/wp-content/uploads/2023/11/IMG_1415.jpeg\",\r\n        \"rating\": {\r\n            \"rate\": 4.9,\r\n            \"count\": 130\r\n        }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}{{PRODUCTS}}",
+					"host": [
+						"{{URL}}{{PRODUCTS}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATEIMAGE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"image updated successfully\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"image\");\r",
+							"    pm.expect(jsonData.image).to.eql(\"https://i.blogs.es/31432f/macbook-pro-m3-max-review-xataka-portada-final-xataka/1200_800.jpeg\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The product image is present in response\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"image\");\r",
+							"    pm.expect(jsonData.image).to.be.a(\"string\").and.to.not.be.empty;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"image\": \"https://i.blogs.es/31432f/macbook-pro-m3-max-review-xataka-portada-final-xataka/1200_800.jpeg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}{{PRODUCTS}}{{CREATED_ID}}",
+					"host": [
+						"{{URL}}{{PRODUCTS}}{{CREATED_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GETTODELETE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"let productosAEliminar = jsonData\r",
+							"    .filter(producto => producto.price < 100)\r",
+							"    .map(producto => producto.id);\r",
+							"\r",
+							"pm.environment.set(\"productos_ids\", JSON.stringify(productosAEliminar));\r",
+							"\r",
+							"pm.test(\"Products were found with a price less than 100\", function () {\r",
+							"    pm.expect(productosAEliminar.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"console.log(\"products to delete:\", productosAEliminar);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}{{PRODUCTS}}",
+					"host": [
+						"{{URL}}{{PRODUCTS}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"let productos = JSON.parse(pm.environment.get(\"productos_ids\") || \"[]\");\r",
+							"\r",
+							"if (productos.length > 0) {\r",
+							"    productos.forEach(productoId => {\r",
+							"        let url = `https://fakestoreapi.com/products/${productoId}`;\r",
+							"        pm.sendRequest({\r",
+							"            url: url,\r",
+							"            method: 'DELETE',\r",
+							"        }, function (err, res) {\r",
+							"            if (!err && res.code === 200) {\r",
+							"                console.log(`product deleted: ${productoId}`);\r",
+							"            } else {\r",
+							"                console.log(`fail to delete product: ${productoId}:`, err || res);\r",
+							"            }\r",
+							"        });\r",
+							"    });\r",
+							"\r",
+							"    pm.environment.set(\"productos_ids\", JSON.stringify([])); \r",
+							"} else {\r",
+							"    console.log(\"No more products to delete.\");\r",
+							"}\r",
+							"pm.test(\"Response time below 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"All productos have been deleted\", function () {\r",
+							"    pm.expect(true).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}{{PRODUCTS}}{{producto_id}}",
+					"host": [
+						"{{URL}}{{PRODUCTS}}{{producto_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
